@@ -42,7 +42,6 @@ public class AddAndDeleteCarTest implements TestWatcher {
                 .setRecordVideoSize(1280, 720));
         page = context.newPage();
     }
-
     @AfterEach
     void attachScreenshotOnFailure() {
         context.close();
