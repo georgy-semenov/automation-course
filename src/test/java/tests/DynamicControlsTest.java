@@ -8,43 +8,32 @@ import com.microsoft.playwright.options.WaitUntilState;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import pages.DynamicControlsPage;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DynamicControlsTest {
-    Playwright playwright;
-    Browser browser;
-    Page page;
+    private TestContext context;
+    private DynamicControlsPage dynamicControlsPage;
 
     @BeforeEach
-    void setUp() {
-        playwright = Playwright.create();
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
-        page = browser.newPage();
+    public void setup() {
+        context = new TestContext();
+        dynamicControlsPage = new DynamicControlsPage(context.getPage());
+        context.getPage().navigate("https://the-internet.herokuapp.com/dynamic_controls",
+                new Page.NavigateOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED));
     }
 
     @Test
-    void testDynamicCheckbox() {
-        String checkBoxLocator = "//input[@type='checkbox']";
-        String messageLocator = "//p[@id='message']";
-        String buttonLocator = "button[onclick='swapCheckbox()']";
-        page.navigate("https://the-internet.herokuapp.com/dynamic_controls", new Page.NavigateOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED));
-
-        assertTrue(page.locator(checkBoxLocator).isVisible());
-
-        page.click(buttonLocator);
-        page.waitForSelector(messageLocator);
-        assertTrue(page.locator(messageLocator).isVisible());
-
-        page.click(buttonLocator);
-        page.waitForSelector(messageLocator);
-        assertTrue(page.locator(checkBoxLocator).isVisible());
+    public void testCheckboxRemoval() {
+        dynamicControlsPage.clickRemoveButton();
+        dynamicControlsPage.waitForElement();
+        assertFalse(dynamicControlsPage.isCheckboxVisible());
     }
 
     @AfterEach
-    void tearDown() {
-        page.close();
-        browser.close();
-        playwright.close();
+    public void teardown() {
+        context.getPage().close();
     }
 }
