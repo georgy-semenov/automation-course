@@ -3,12 +3,14 @@ package base;
 import com.microsoft.playwright.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import pages.BasePage;
 
-public class BaseTest {
+public class BaseTest  {
     Playwright playwright;
     Browser browser;
     BrowserContext context;
-    public Page page;
+    protected Page page;
+
 
     @BeforeEach
     void setUp() {
@@ -17,8 +19,6 @@ public class BaseTest {
         context = browser.newContext();
         page = context.newPage();
     }
-
-
 
     @AfterEach
     void tearDown() {
